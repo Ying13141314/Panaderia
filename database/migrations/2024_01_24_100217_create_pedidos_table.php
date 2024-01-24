@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id()->unique();
-            $table->dateTime('fecha_pedido');
             $table->timestamps();
         });
     }

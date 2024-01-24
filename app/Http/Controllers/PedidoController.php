@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use App\Http\Requests\StorePedidoRequest;
 use App\Http\Requests\UpdatePedidoRequest;
+use App\Models\PedidoProducto;
+use App\Models\Producto;
 
 class PedidoController extends Controller
 {
@@ -13,7 +15,9 @@ class PedidoController extends Controller
      */
     public function index()
     {
-        //
+        $resultados =  Pedido::with('productos')->paginate(10);
+
+        return view('pedidos.index', compact('resultados'));
     }
 
     /**
@@ -21,7 +25,8 @@ class PedidoController extends Controller
      */
     public function create()
     {
-        //
+        $productos = Producto::all();
+        return view('pedidos.create', compact('productos'));
     }
 
     /**
@@ -29,7 +34,10 @@ class PedidoController extends Controller
      */
     public function store(StorePedidoRequest $request)
     {
-        //
+        $pedido = Pedido::create();
+        $pedido->productos()->attach($request->input('producto'), ['cantidad' => $request->input('cantidad')]);
+
+        return  redirect()->route('pedidos.index')->with('success', 'Pedido creado correctamente');
     }
 
     /**
@@ -37,7 +45,6 @@ class PedidoController extends Controller
      */
     public function show(Pedido $pedido)
     {
-        //
     }
 
     /**
@@ -45,15 +52,17 @@ class PedidoController extends Controller
      */
     public function edit(Pedido $pedido)
     {
-        //
+        $productos = $pedido->productos()->paginate(10);
+
+        return view('pedidos.edit', compact('productos', 'pedido'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePedidoRequest $request, Pedido $pedido)
+    public function update(Pedido $pedido)
     {
-        //
+        // Sin uso
     }
 
     /**
@@ -61,6 +70,8 @@ class PedidoController extends Controller
      */
     public function destroy(Pedido $pedido)
     {
-        //
+        $pedido->delete();
+        return redirect()->route('pedidos.index')
+            ->withSuccess('El pedido se ha borrado correctamente');
     }
 }

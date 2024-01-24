@@ -13,14 +13,10 @@ return new class extends Migration
     {
         Schema::create('pedido_producto', function (Blueprint $table) {
             $table->id()->unique();
-            $table->foreignId('pedido_id')
-                ->constrained('pedidos')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('producto_id')
-                ->constrained('productos')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
+            $table->unsignedBigInteger('pedido_id');
+            $table->unsignedBigInteger('producto_id');
+            $table->foreign('pedido_id')->references('id')->on('pedidos')->onDelete('cascade');
+            $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
             $table->integer('cantidad');
         });
     }

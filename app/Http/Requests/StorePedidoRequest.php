@@ -11,7 +11,7 @@ class StorePedidoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StorePedidoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'cantidad' => 'required|numeric|min:1',
+            'producto' => 'exists:productos,id'
         ];
     }
 }

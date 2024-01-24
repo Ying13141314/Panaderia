@@ -23,7 +23,7 @@ class StoreProductoRequest extends FormRequest
     {
         return [
             'nombre' => 'required|string|max:250',
-            'precio' => 'required',
+            'precio' => 'required|numeric|min:0',
             'descripcion' => 'nullable|string'
         ];
     }

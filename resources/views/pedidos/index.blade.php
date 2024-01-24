@@ -12,34 +12,35 @@
         @endif
 
         <div class="card">
-            <div class="card-header d-flex justify-content-between">Lista de producto <a class="btn btn-warning btn-sm" href="{{route('pedidos.index')}}">Ver listado de pedido</a></div>
+            <div class="card-header d-flex justify-content-between">Lista de pedido <a class="btn btn-warning btn-sm" href="{{route('productos.index')}}">Ver listado de producto</a></div>
             <div class="card-body">
-                <a href="{{ route('productos.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i> Nuevo Producto</a>
+                <a href="{{ route('pedidos.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i> Nuevo Pedido</a>
                 <table class="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th scope="col">Identificador</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Descripcion</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Fecha del pedido</th>
+                        <th scope="col">Productos</th>
+                        <th scope="col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                        @forelse ($productos as $producto)
+                        @forelse ($resultados as $resultado)
                         <tr>
-                            <th scope="row">{{ $producto->id }}</th>
-                            <td>{{ $producto->nombre }}</td>
-                            <td>{{ $producto->descripcion }}</td>
-                            <td>{{ $producto->precio }}€</td>
+                            <th scope="row">{{ $resultado->id }}</th>
+                            <td>{{ $resultado->created_at }}</td>
                             <td>
-                                <form action="{{ route('productos.destroy', $producto->id) }}" method="post">
+                                @foreach($resultado->productos as $producto)
+                                    <span>{{ $producto->nombre }}:</span>
+                                    <span>{{ $producto->pivot->cantidad }}</span><br>
+                                @endforeach
+                            </td>
+                            <td>
+                                <form action="{{ route('pedidos.destroy', $resultado->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
 
-                                    <a href="{{ route('productos.show', $producto->id) }}" class="btn btn-warning btn-sm"><i class="bi bi-eye"></i> Ver</a>
-
-                                    <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> Editar</a>   
+                                    <a href="{{ route('pedidos.edit', $resultado->id) }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> Editar</a>   
 
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Seguro lo quieres eliminar?');"><i class="bi bi-trash"></i> Eliminar</button>
                                 </form>
@@ -48,14 +49,13 @@
                         @empty
                             <td colspan="6">
                                 <span class="text-danger">
-                                    <strong>No hay producto!</strong>
+                                    <strong>No hay pedido!</strong>
                                 </span>
                             </td>
                         @endforelse
                     </tbody>
                   </table>
 
-                  {{ $productos->links() }}
 
             </div>
         </div>
